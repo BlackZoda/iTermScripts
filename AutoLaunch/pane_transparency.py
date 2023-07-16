@@ -8,8 +8,8 @@ import os
 SETTINGS_FILE = os.path.join(os.path.dirname(__file__), '../settings.json')
 
 # Default pane transparency settings (overridden by settings.json)
-DEFAULT_TRANSPARENCY_ACTIVE = 0.2
-DEFAULT_TRANSPARENCY_INACTIVE = 0.5
+DEFAULT_TRANSPARENCY_ACTIVE = 0.25
+DEFAULT_TRANSPARENCY_INACTIVE = 0.75
 DEFAULT_BLUR = False
 DEFAULT_BLUR_RADUIUS = 0
 
@@ -20,10 +20,22 @@ async def load_settings():
         settings = json.load(f)
 
     pane_transparency = settings.get("pane_transparency", {})
+
     transparancy_active = pane_transparency.get("active", DEFAULT_TRANSPARENCY_ACTIVE)
+    transparancy_active = DEFAULT_TRANSPARENCY_ACTIVE if transparancy_active > 1 or transparancy_active < 0 else transparancy_active
+    print(f"Transparancy active: {transparancy_active}")
+
     transparency_inactive = pane_transparency.get("inactive", DEFAULT_TRANSPARENCY_INACTIVE)
+    transparency_inactive = DEFAULT_TRANSPARENCY_INACTIVE if transparency_inactive > 1 or transparency_inactive < 0 else transparency_inactive
+    print(f"Transparancy inactive: {transparency_inactive}")
+
     blur = pane_transparency.get("blur", DEFAULT_BLUR)
+    blur = DEFAULT_BLUR if blur != True or False else blur
+    print(f"Blur: {blur}")
+
     blur_radius = pane_transparency.get("blur_radius", DEFAULT_BLUR_RADUIUS)
+    blur_radius = blur_radius if (isinstance(blur_radius, int) and 0 <= blur_radius <= 30) else DEFAULT_BLUR_RADUIUS
+    print(f"Blur radius: {blur_radius}")
 
     return transparancy_active, transparency_inactive, blur, blur_radius
 
