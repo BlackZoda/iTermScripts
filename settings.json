@@ -1,6 +1,6 @@
 {
     "pane_transparency": {
-        "active": 0.2,
-        "inactive": 0.5
+        "active": 0.25,
+        "inactive": 0.65
     }
 }
