@@ -36,12 +36,10 @@ async def transparancy_update(app, active_session, update, transparency_active, 
 
         # Updates all inactive panes
         await transparancy_update_inactive(app, active_session, inactive_change)
-        print(f"Inactive: {transparency_inactive}")
 
         # Updates the the active pane
         if active_session:
             await active_session.async_set_profile_properties(active_change)
-            print(f"Active: {transparency_active}")
 
 async def transparancy_update_inactive(app, active_session, inactive_change):
     """Updating the transparency off all inactive panes."""
