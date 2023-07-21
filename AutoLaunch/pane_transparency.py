@@ -14,7 +14,7 @@ DEFAULT_BLUR = False
 DEFAULT_BLUR_RADUIUS = 0
 
 async def load_settings():
-    """Load settings from the settings.json configuration file."""
+    """Load settings from the settings.json file."""
 
     with open(SETTINGS_FILE) as f:
         settings = json.load(f)
@@ -42,7 +42,7 @@ async def transparancy_update(
         transparency_inactive,
         blur,
         blur_radius):
-    """Updating the transparency of the active and inactive panes."""
+    """Updating the transparency for the active and all inactive panes."""
 
     inactive_change = iterm2.LocalWriteOnlyProfile()
     inactive_change.set_transparency(transparency_inactive)
@@ -59,7 +59,7 @@ async def transparancy_update(
     await active_session.async_set_profile_properties(active_change)
 
 async def transparancy_update_inactive(app, active_session, inactive_change):
-    """Updating the transparency off all inactive panes."""
+    """Updating the transparency for all inactive panes."""
 
     # Looping over all inactive panes and changing transparency
     for window in app.terminal_windows:
