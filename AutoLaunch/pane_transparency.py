@@ -38,28 +38,25 @@ async def load_settings():
 async def transparancy_update(
         app,
         active_session,
-        update,
         transparency_active,
         transparency_inactive,
         blur,
         blur_radius):
     """Updating the transparency of the active and inactive panes."""
 
-    if update.active_session_changed or update.selected_tab_changed:
+    inactive_change = iterm2.LocalWriteOnlyProfile()
+    inactive_change.set_transparency(transparency_inactive)
 
-        inactive_change = iterm2.LocalWriteOnlyProfile()
-        inactive_change.set_transparency(transparency_inactive)
+    active_change = iterm2.LocalWriteOnlyProfile()
+    active_change.set_transparency(transparency_active)
+    active_change.set_blur(blur)
+    active_change.set_blur_radius(blur_radius)
 
-        active_change = iterm2.LocalWriteOnlyProfile()
-        active_change.set_transparency(transparency_active)
-        active_change.set_blur(blur)
-        active_change.set_blur_radius(blur_radius)
+    # Updates all inactive panes
+    await transparancy_update_inactive(app, active_session, inactive_change)
 
-        # Updates all inactive panes
-        await transparancy_update_inactive(app, active_session, inactive_change)
-
-        # Updates the the active pane
-        await active_session.async_set_profile_properties(active_change)
+    # Updates the the active pane
+    await active_session.async_set_profile_properties(active_change)
 
 async def transparancy_update_inactive(app, active_session, inactive_change):
     """Updating the transparency off all inactive panes."""
@@ -86,13 +83,13 @@ async def main(connection):
             if update.active_session_changed:
                 active_session = app.get_session_by_id(update.active_session_changed.session_id)
 
-            await transparancy_update(
-                app,
-                active_session,
-                update,
-                transparency_active,
-                transparency_inactive,
-                blur,
-                blur_radius)
+            if update.active_session_changed or update.selected_tab_changed:
+                await transparancy_update(
+                    app,
+                    active_session,
+                    transparency_active,
+                    transparency_inactive,
+                    blur,
+                    blur_radius)
 
 iterm2.run_forever(main)
